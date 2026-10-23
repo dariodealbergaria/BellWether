@@ -353,6 +353,23 @@ footer .fb { font: 900 18px var(--display); color: var(--flag-blue); letter-spac
   .ask-panel { right: 8px; left: 8px; width: auto; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); height: min(640px, calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))); }
 }
 footer .wrap { padding-bottom: 88px; }
+
+/* Hairline sections: no boxes around content. Thin rules and space separate sections; only clickable race cards keep a light border. */
+main { gap: 32px; }
+main > * + * { border-top: 1px solid var(--line); padding-top: 32px; }
+.bop { background: none; border: 0; border-left: 1px solid var(--line); border-radius: 0; padding: 0 0 0 24px; }
+.bop h2 { padding-top: 0; }
+@media (max-width: 900px) { .bop { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 20px; } }
+.math { background: none; border: 0; border-radius: 0; padding: 0; }
+.panel { background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 18px 0 0; }
+.measure { background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 14px 0 0; }
+.teaser { background: none; border-radius: 0; padding: 0; }
+.sec > .teaser { border-top: 1px solid var(--line); padding-top: 20px; }
+.none { background: none; border: 0; border-radius: 0; padding: 0; }
+.callout { border-radius: 2px; }
+.rc, .rc-top h3 a::after, .seat-list a { border-radius: 2px; }
+/* Headings get focus after navigation so screen readers announce the new page; don't draw a box around them. */
+h1[tabindex="-1"]:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 </style>
 
@@ -625,7 +642,7 @@ footer .wrap { padding-bottom: 88px; }
     return `<article class="rc">
       <div class="rc-top"><h3><a href="#${r.id}" aria-label="${esc(raceName(r))}">${esc(shortName(r))}</a><span class="office">${r.office}${r.office === 'House' ? ' · ' + esc(r.state) : ''}</span></h3>${ratingChip(r, true)}</div>
       ${duel(r)}
-      <div class="rc-meta"><span>${r.hasPolls ? 'Polls: ' + esc(r.spread) : ''}</span>${spark(f.hist, pcol(f.party), 84, 26)}</div>
+      <div class="rc-meta"><span>${r.hasPolls ? 'Polls: ' + esc(r.spread) : ''}</span></div>
       ${(r.pickup || r.split || (f.dm && Math.abs(f.dm) >= 1)) ? `<div class="rc-meta"><span class="tags">${pickupChip(r)}${splitChip(r)}</span>${f.dm && Math.abs(f.dm) >= 1 ? `<span>${esc(last(f.name))} ${chg(f.dm)}</span>` : ''}</div>` : ''}
       ${r.fl.list.some(x => x.k !== 'light') ? `<div class="rc-meta"><span class="tags">${r.fl.list.filter(x => x.k !== 'light').map(x => flagChip(x)).join('')}</span></div>` : ''}
       ${withNews && n ? `<div class="rc-news"><span class="src">${esc(n.src)}${n.d ? ' · ' + esc(n.d) : ''}</span><p>${esc(n.t)}</p></div>` : ''}
@@ -648,7 +665,7 @@ footer .wrap { padding-bottom: 88px; }
         <div class="lbl">${c.label.replace(' control', '')}<small>${term('Chance of control', 'odds')}, market average: ${oddsWords(avg(fav))}</small></div>
         <div class="val" style="color:${pcol(fav.party)}"><span class="who">${fav.name}</span>${pct(avg(fav))}%</div>
         <div class="bar" role="img" aria-label="${a.name} ${pct(avg(a))}%, ${b.name} ${pct(avg(b))}%"><i style="width:${avg(a) * 100}%;background:${pcol(a.party)}"></i><i style="flex:1"></i><i style="width:${avg(b) * 100}%;background:${pcol(b.party)}"></i></div>
-        <div class="meta"><span>Kalshi ${pct(fav.k)}% · Polymarket ${pct(fav.p)}% ${pc ? chg(dMkt(fav, pc[fi])) : ''}</span>${spark(series('c', c.id, fi), pcol(fav.party), 84, 26)}</div>
+        <div class="meta"><span>Kalshi ${pct(fav.k)}% · Polymarket ${pct(fav.p)}% ${pc ? chg(dMkt(fav, pc[fi])) : ''}</span></div>
       </div>`;
     };
     const g = D.generic, gl = g.D >= g.R ? 'D' : 'R', gm = Math.abs(g.D - g.R);
@@ -660,7 +677,7 @@ footer .wrap { padding-bottom: 88px; }
         <div class="lbl">${term('Generic ballot', 'generic')}<small>RCP polling average, ${esc(g.dates)}</small></div>
         <div class="val" style="color:${pcol(gl)}"><span class="who">${pword[gl]}</span>+${gm.toFixed(1)}</div>
         <div class="bar" role="img" aria-label="Democrats ${g.D}%, Republicans ${g.R}%"><i style="width:${g.D}%;background:var(--dem)"></i><i style="flex:1"></i><i style="width:${g.R}%;background:var(--rep)"></i></div>
-        <div class="meta"><span>D ${g.D.toFixed(1)}% · R ${g.R.toFixed(1)}% ${gd != null ? chg(gd, 1, '') : ''}</span>${spark(genSeries(), pcol(gl), 84, 26)}</div>
+        <div class="meta"><span>D ${g.D.toFixed(1)}% · R ${g.R.toFixed(1)}% ${gd != null ? chg(gd, 1, '') : ''}</span></div>
       </div>
     </aside>`;
 
@@ -1188,3 +1205,4 @@ Rules:
   route();
 })();
 </script>
+
